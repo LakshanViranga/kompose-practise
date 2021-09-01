@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: zeebe
+  name: zeebe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: zeebe
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/operate_zeebe_network: "true"
+        io.kompose.service: zeebe
+    spec:
+      containers:
+        - env:
+            - name: ZEEBE_LOG_LEVEL
+              value: debug
+          image: camunda/zeebe:1.1.0
+          name: zeebe
+          ports:
+            - containerPort: 26500
+            - containerPort: 9600
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/zeebe/data
+              name: zeebe-data
+            - mountPath: /usr/local/zeebe/config/application.yaml
+              name: zeebe-claim1
+      restartPolicy: Always
+      volumes:
+        - name: zeebe-data
+          persistentVolumeClaim:
+            claimName: zeebe-data
+        - name: zeebe-claim1
+          persistentVolumeClaim:
+            claimName: zeebe-claim1
+status: {}

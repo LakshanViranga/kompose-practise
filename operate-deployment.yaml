@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: operate
+  name: operate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: operate
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/operate_zeebe_network: "true"
+        io.kompose.service: operate
+    spec:
+      containers:
+        - image: camunda/operate:1.1.0
+          name: operate
+          ports:
+            - containerPort: 8080
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/local/operate/config/application.yml
+              name: operate-claim0
+      restartPolicy: Always
+      volumes:
+        - name: operate-claim0
+          persistentVolumeClaim:
+            claimName: operate-claim0
+status: {}

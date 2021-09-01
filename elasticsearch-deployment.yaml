@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.22.0 (955b78124)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: elasticsearch
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: elasticsearch
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.22.0 (955b78124)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/operate_zeebe_network: "true"
+        io.kompose.service: elasticsearch
+    spec:
+      containers:
+        - env:
+            - name: ES_JAVA_OPTS
+              value: -Xms512m -Xmx512m
+            - name: cluster.name
+              value: elasticsearch
+            - name: discovery.type
+              value: single-node
+          image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+          name: elasticsearch
+          ports:
+            - containerPort: 9200
+          resources: {}
+          volumeMounts:
+            - mountPath: /usr/share/elasticsearch/data
+              name: zeebe-elasticsearch-data
+      restartPolicy: Always
+      volumes:
+        - name: zeebe-elasticsearch-data
+          persistentVolumeClaim:
+            claimName: zeebe-elasticsearch-data
+status: {}
