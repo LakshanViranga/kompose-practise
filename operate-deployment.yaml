@@ -40,9 +40,9 @@ spec:
           persistentVolumeClaim:
             claimName: operate-claim0
         - name: operate-config
-            configMap:
-              name: zeebe-config
-              items:
-                - key: application.yaml
-                  path: application.yaml
+          configMap:
+            name: zeebe-config
+            items:
+            - key: application.yaml
+              path: application.yaml
 status: {}
