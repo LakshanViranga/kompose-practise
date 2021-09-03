@@ -46,9 +46,9 @@ spec:
           persistentVolumeClaim:
             claimName: zeebe-data
         - name: zeebe-config
-            configMap:
-              name: zeebe-config
-              items:
-                - key: application.yaml
-                  path: application.yaml
+          configMap:
+            name: zeebe-config
+            items:
+            - key: application.yaml
+              path: application.yaml
 status: {}
